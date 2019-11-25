@@ -30,6 +30,14 @@
 package org.objectweb.asm;
 
 /**
+ * {@link FieldVisitor} 的实现类，用于生成Java 域的字节码
+ * field_info {
+ *  u2 access_flags;
+ *  u2 name_index;
+ *  u2 descriptor_index;
+ *  u2 attributes_count;
+ *  attribute_info attributes[attributes_count];
+ * }
  * An {@link FieldVisitor} that generates Java fields in bytecode form.
  * 
  * @author Eric Bruneton
@@ -42,56 +50,66 @@ final class FieldWriter extends FieldVisitor {
     private final ClassWriter cw;
 
     /**
+     * 该域的访问标识
      * Access flags of this field.
      */
     private final int access;
 
     /**
+     * 该域名称在常量池中的索引
      * The index of the constant pool item that contains the name of this
      * method.
      */
     private final int name;
 
     /**
+     * 该域描述符在常量池中索引
      * The index of the constant pool item that contains the descriptor of this
      * field.
      */
     private final int desc;
 
     /**
+     * 该域签名在常量池中的索引
      * The index of the constant pool item that contains the signature of this
      * field.
      */
     private int signature;
 
     /**
+     * 该域值在常量池中的索引
      * The index of the constant pool item that contains the constant value of
      * this field.
      */
     private int value;
 
     /**
+     * 该域上运行时可见的注解
      * The runtime visible annotations of this field. May be <tt>null</tt>.
      */
     private AnnotationWriter anns;
 
     /**
+     * 该域上运行时不可见的注解
      * The runtime invisible annotations of this field. May be <tt>null</tt>.
      */
     private AnnotationWriter ianns;
 
     /**
+     * 该域上运行时可见的类型注解
      * The runtime visible type annotations of this field. May be <tt>null</tt>.
      */
     private AnnotationWriter tanns;
 
     /**
+     * 该域上运行时不可见的类型注解
      * The runtime invisible type annotations of this field. May be
      * <tt>null</tt>.
      */
     private AnnotationWriter itanns;
 
     /**
+     * 该域的非标准属性
      * The non standard attributes of this field. May be <tt>null</tt>.
      */
     private Attribute attrs;
@@ -199,6 +217,7 @@ final class FieldWriter extends FieldVisitor {
     // ------------------------------------------------------------------------
 
     /**
+     * 返回该域的大小
      * Returns the size of this field.
      * 
      * @return the size of this field.
@@ -207,37 +226,44 @@ final class FieldWriter extends FieldVisitor {
         int size = 8;
         if (value != 0) {
             cw.newUTF8("ConstantValue");
+            // jvms 4.7.2
             size += 8;
         }
         if ((access & Opcodes.ACC_SYNTHETIC) != 0) {
-            if ((cw.version & 0xFFFF) < Opcodes.V1_5
-                    || (access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) != 0) {
+            if ((cw.version & 0xFFFF) < Opcodes.V1_5 || (access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) != 0) {
                 cw.newUTF8("Synthetic");
+                // jvms 4.7.8
                 size += 6;
             }
         }
         if ((access & Opcodes.ACC_DEPRECATED) != 0) {
             cw.newUTF8("Deprecated");
+            // jvms 4.7.15
             size += 6;
         }
         if (ClassReader.SIGNATURES && signature != 0) {
             cw.newUTF8("Signature");
+            // jvms 4.7.9
             size += 8;
         }
         if (ClassReader.ANNOTATIONS && anns != null) {
             cw.newUTF8("RuntimeVisibleAnnotations");
+            // jvms 4.7.16
             size += 8 + anns.getSize();
         }
         if (ClassReader.ANNOTATIONS && ianns != null) {
             cw.newUTF8("RuntimeInvisibleAnnotations");
+            // jvms 4.7.17
             size += 8 + ianns.getSize();
         }
         if (ClassReader.ANNOTATIONS && tanns != null) {
             cw.newUTF8("RuntimeVisibleTypeAnnotations");
+            // 4.7.20
             size += 8 + tanns.getSize();
         }
         if (ClassReader.ANNOTATIONS && itanns != null) {
             cw.newUTF8("RuntimeInvisibleTypeAnnotations");
+            // 4.7.21
             size += 8 + itanns.getSize();
         }
         if (attrs != null) {
@@ -247,6 +273,7 @@ final class FieldWriter extends FieldVisitor {
     }
 
     /**
+     * 将域写入给定的字节数组
      * Puts the content of this field into the given byte vector.
      * 
      * @param out
@@ -290,35 +317,101 @@ final class FieldWriter extends FieldVisitor {
         }
         out.putShort(attributeCount);
         if (value != 0) {
+            /**
+             * jvms8 4.7.2
+             * ConstantValue_attribute {
+             *  u2 attribute_name_index;
+             *  u4 attribute_length;
+             *  u2 constantvalue_index;
+             * }
+             */
             out.putShort(cw.newUTF8("ConstantValue"));
             out.putInt(2).putShort(value);
         }
         if ((access & Opcodes.ACC_SYNTHETIC) != 0) {
+            /**
+             * jvms8 4.7.8
+             * Synthetic_attribute {
+             *  u2 attribute_name_index;
+             *  u4 attribute_length;
+             * }
+             */
             if ((cw.version & 0xFFFF) < Opcodes.V1_5
                     || (access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) != 0) {
                 out.putShort(cw.newUTF8("Synthetic")).putInt(0);
             }
         }
         if ((access & Opcodes.ACC_DEPRECATED) != 0) {
+            /**
+             * jvms8 4.7.15
+             * Deprecated_attribute {
+             *  u2 attribute_name_index;
+             *  u4 attribute_length;
+             * }
+             */
             out.putShort(cw.newUTF8("Deprecated")).putInt(0);
         }
         if (ClassReader.SIGNATURES && signature != 0) {
+            /**
+             * jvms8 4.7.9
+             * Signature_attribute {
+             *  u2 attribute_name_index;
+             *  u4 attribute_length;
+             *  u2 signature_index;
+             * }
+             */
             out.putShort(cw.newUTF8("Signature"));
             out.putInt(2).putShort(signature);
         }
         if (ClassReader.ANNOTATIONS && anns != null) {
+            /**
+             * jvms8 4.7.16
+             * RuntimeVisibleAnnotations_attribute {
+             *  u2 attribute_name_index;
+             *  u4 attribute_length;
+             *  u2 num_annotations;
+             *  annotation annotations[num_annotations];
+             * }
+             */
             out.putShort(cw.newUTF8("RuntimeVisibleAnnotations"));
             anns.put(out);
         }
         if (ClassReader.ANNOTATIONS && ianns != null) {
+            /**
+             * jvms 4.7.17
+             * RuntimeInvisibleAnnotations_attribute {
+             *  u2 attribute_name_index;
+             *  u4 attribute_length;
+             *  u2 num_annotations;
+             *  annotation annotations[num_annotations];
+             * }
+             */
             out.putShort(cw.newUTF8("RuntimeInvisibleAnnotations"));
             ianns.put(out);
         }
         if (ClassReader.ANNOTATIONS && tanns != null) {
+            /**
+             * jvms8 4.7.20
+             * RuntimeVisibleTypeAnnotations_attribute {
+             *  u2 attribute_name_index;
+             *  u4 attribute_length;
+             *  u2 num_annotations;
+             *  type_annotation annotations[num_annotations];
+             * }
+             */
             out.putShort(cw.newUTF8("RuntimeVisibleTypeAnnotations"));
             tanns.put(out);
         }
         if (ClassReader.ANNOTATIONS && itanns != null) {
+            /**
+             * 4.7.21
+             * RuntimeInvisibleTypeAnnotations_attribute {
+             *  u2 attribute_name_index;
+             *  u4 attribute_length;
+             *  u2 num_annotations;
+             *  type_annotation annotations[num_annotations];
+             * }
+             */
             out.putShort(cw.newUTF8("RuntimeInvisibleTypeAnnotations"));
             itanns.put(out);
         }

@@ -38,11 +38,13 @@ package org.objectweb.asm;
 class Handler {
 
     /**
+     * 异常处理的开始，包括
      * Beginning of the exception handler's scope (inclusive).
      */
     Label start;
 
     /**
+     * 异常处理的结束，不包括
      * End of the exception handler's scope (exclusive).
      */
     Label end;

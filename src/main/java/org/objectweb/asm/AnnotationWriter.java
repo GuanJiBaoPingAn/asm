@@ -30,6 +30,49 @@
 package org.objectweb.asm;
 
 /**
+ * {@link AnnotationVisitor} 的实现，用于生成注解的字节码
+ * annotation {
+ *  u2 type_index;
+ *  u2 num_element_value_pairs;
+ *  {
+ *      u2 element_name_index;
+ *      element_value value;
+ *  } element_value_pairs[num_element_value_pairs];
+ * }
+ *
+ * element_value {
+ *  u1 tag;
+ *  union {
+ *      u2 const_value_index;
+ *      {
+ *          u2 type_name_index;
+ *          u2 const_name_index;
+ *      } enum_const_value;
+ *      u2 class_info_index;
+ *      annotation annotation_value;
+ *      {
+ *          u2 num_values;
+ *          element_value values[num_values];
+ *      } array_value;
+ *  } value;
+ * }
+ *
+ *
+ *tag|   Type   |      value Item   |   Constant Type  |
+ * B |   byte   | const_value_index | CONSTANT_Integer |
+ * C |   char   | const_value_index | CONSTANT_Integer |
+ * D |  double  | const_value_index | CONSTANT_Double  |
+ * F |   float  | const_value_index | CONSTANT_Float   |
+ * I |   int    | const_value_index | CONSTANT_Integer |
+ * J |   long   | const_value_index | CONSTANT_Long    |
+ * S |   short  | const_value_index | CONSTANT_Integer |
+ * Z |  boolean | const_value_index | CONSTANT_Integer |
+ * s |  String  | const_value_index | CONSTANT_Utf8    |
+ * e |   Enum   | enum_const_value  | Not applicable   |
+ * c |   Class  | class_info_index  | Not applicable   |
+ * @ |Annotation|  annotation_value | Not applicable   |
+ * [ |   Array  | type array_value  | Not applicable   |
+ *
  * An {@link AnnotationVisitor} that generates annotations in bytecode form.
  * 
  * @author Eric Bruneton
@@ -43,11 +86,13 @@ final class AnnotationWriter extends AnnotationVisitor {
     private final ClassWriter cw;
 
     /**
+     * 注解的大小
      * The number of values in this annotation.
      */
     private int size;
 
     /**
+     * annotation default 和 annotation arrays 使用的是unamed 的值
      * <tt>true<tt> if values are named, <tt>false</tt> otherwise. Annotation
      * writers used for annotation default and annotation arrays use unnamed
      * values.
@@ -55,6 +100,7 @@ final class AnnotationWriter extends AnnotationVisitor {
     private final boolean named;
 
     /**
+     * 注解值的字节码表示
      * The annotation values in bytecode form. This byte vector only contains
      * the values themselves, i.e. the number of values must be stored as a
      * unsigned short just before these bytes.
@@ -190,8 +236,7 @@ final class AnnotationWriter extends AnnotationVisitor {
     }
 
     @Override
-    public void visitEnum(final String name, final String desc,
-            final String value) {
+    public void visitEnum(final String name, final String desc, final String value) {
         ++size;
         if (named) {
             bv.putShort(cw.newUTF8(name));

@@ -30,6 +30,7 @@
 package org.objectweb.asm;
 
 /**
+ * Java 域的访问者。该类方法必须以以下顺序调用。
  * A visitor to visit a Java field. The methods of this class must be called in
  * the following order: ( <tt>visitAnnotation</tt> |
  * <tt>visitTypeAnnotation</tt> | <tt>visitAttribute</tt> )* <tt>visitEnd</tt>.
@@ -45,6 +46,7 @@ public abstract class FieldVisitor {
     protected final int api;
 
     /**
+     * 用于代理方法调用给子类实现
      * The field visitor to which this visitor must delegate method calls. May
      * be null.
      */
@@ -97,6 +99,7 @@ public abstract class FieldVisitor {
     }
 
     /**
+     * 访问域上的注解
      * Visits an annotation on the type of the field.
      * 
      * @param typeRef
@@ -126,6 +129,7 @@ public abstract class FieldVisitor {
     }
 
     /**
+     * 访问域的非标准属性
      * Visits a non standard attribute of the field.
      * 
      * @param attr
@@ -138,6 +142,7 @@ public abstract class FieldVisitor {
     }
 
     /**
+     * 访问域的结尾。用于表明域的所有注解和属性都被访问完成
      * Visits the end of the field. This method, which is the last one to be
      * called, is used to inform the visitor that all the annotations and
      * attributes of the field have been visited.

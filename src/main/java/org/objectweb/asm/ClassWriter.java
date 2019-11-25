@@ -30,6 +30,7 @@
 package org.objectweb.asm;
 
 /**
+ * {@link ClassVisitor} 的子类，用于生成Java 类字节形式的类。
  * A {@link ClassVisitor} that generates classes in bytecode form. More
  * precisely this visitor generates a byte array conforming to the Java class
  * file format. It can be used alone, to generate a Java class "from scratch",
@@ -41,6 +42,7 @@ package org.objectweb.asm;
 public class ClassWriter extends ClassVisitor {
 
     /**
+     * 自动计算最大栈大小和方法内的最大本地变量数。
      * Flag to automatically compute the maximum stack size and the maximum
      * number of local variables of methods. If this flag is set, then the
      * arguments of the {@link MethodVisitor#visitMaxs visitMaxs} method of the
@@ -53,6 +55,7 @@ public class ClassWriter extends ClassVisitor {
     public static final int COMPUTE_MAXS = 1;
 
     /**
+     * 自动计算栈帧
      * Flag to automatically compute the stack map frames of methods from
      * scratch. If this flag is set, then the calls to the
      * {@link MethodVisitor#visitFrame} method are ignored, and the stack map
@@ -66,183 +69,219 @@ public class ClassWriter extends ClassVisitor {
     public static final int COMPUTE_FRAMES = 2;
 
     /**
+     * 假访问标识，用于区别合成属性和合成访问标识
      * Pseudo access flag to distinguish between the synthetic attribute and the
      * synthetic access flag.
      */
     static final int ACC_SYNTHETIC_ATTRIBUTE = 0x40000;
 
     /**
+     * 从ACC_SYNTHETIC_ATTRIBUTE 转换为Opcode.ACC_SYNTHETIC
      * Factor to convert from ACC_SYNTHETIC_ATTRIBUTE to Opcode.ACC_SYNTHETIC.
      */
-    static final int TO_ACC_SYNTHETIC = ACC_SYNTHETIC_ATTRIBUTE
-            / Opcodes.ACC_SYNTHETIC;
+    static final int TO_ACC_SYNTHETIC = ACC_SYNTHETIC_ATTRIBUTE / Opcodes.ACC_SYNTHETIC;
 
     /**
+     * 无任何参数的指令集
      * The type of instructions without any argument.
      */
     static final int NOARG_INSN = 0;
 
     /**
+     * 有一个有符号byte 参数的指令集
      * The type of instructions with an signed byte argument.
      */
     static final int SBYTE_INSN = 1;
 
     /**
+     * 有一个有符号short 参数的指令集
      * The type of instructions with an signed short argument.
      */
     static final int SHORT_INSN = 2;
 
     /**
+     * 有一个本地方法索引参数的指令集
      * The type of instructions with a local variable index argument.
      */
     static final int VAR_INSN = 3;
 
     /**
+     * 有一个隐式本地变量索引参数
      * The type of instructions with an implicit local variable index argument.
      */
     static final int IMPLVAR_INSN = 4;
 
     /**
+     * 有一个类型描述符参数的指令集
      * The type of instructions with a type descriptor argument.
      */
     static final int TYPE_INSN = 5;
 
     /**
+     * 域和方法调用的指令集
      * The type of field and method invocations instructions.
      */
     static final int FIELDORMETH_INSN = 6;
 
     /**
+     * INVOKEINTERFACE/INVOKEDYNAMIC 指令
      * The type of the INVOKEINTERFACE/INVOKEDYNAMIC instruction.
      */
     static final int ITFMETH_INSN = 7;
 
     /**
+     * INVOKEDYNAMIC 指令
      * The type of the INVOKEDYNAMIC instruction.
      */
     static final int INDYMETH_INSN = 8;
 
     /**
+     * 两个字节偏移的指令
      * The type of instructions with a 2 bytes bytecode offset label.
      */
     static final int LABEL_INSN = 9;
 
     /**
+     * 四个字节偏移的指令
      * The type of instructions with a 4 bytes bytecode offset label.
      */
     static final int LABELW_INSN = 10;
 
     /**
+     * LDC 指令
      * The type of the LDC instruction.
      */
     static final int LDC_INSN = 11;
 
     /**
+     * LDC_W 和 LDC2_W 指令
      * The type of the LDC_W and LDC2_W instructions.
      */
     static final int LDCW_INSN = 12;
 
     /**
+     * IINC 指令
      * The type of the IINC instruction.
      */
     static final int IINC_INSN = 13;
 
     /**
+     * TABLESWITCH 指令
      * The type of the TABLESWITCH instruction.
      */
     static final int TABL_INSN = 14;
 
     /**
+     * LOOKUPSWITCH 指令
      * The type of the LOOKUPSWITCH instruction.
      */
     static final int LOOK_INSN = 15;
 
     /**
+     * MULTIANEWARRAY 指令
      * The type of the MULTIANEWARRAY instruction.
      */
     static final int MANA_INSN = 16;
 
     /**
+     * WIDE 指令
      * The type of the WIDE instruction.
      */
     static final int WIDE_INSN = 17;
 
     /**
+     * 存储了所有JVM opcode
      * The instruction types of all JVM opcodes.
      */
     static final byte[] TYPE;
 
     /**
+     * CONSTANT_Class 常量池元素
      * The type of CONSTANT_Class constant pool items.
      */
     static final int CLASS = 7;
 
     /**
+     * CONSTANT_Fieldref 常量池元素
      * The type of CONSTANT_Fieldref constant pool items.
      */
     static final int FIELD = 9;
 
     /**
+     * CONSTANT_Methodref 常量池元素
      * The type of CONSTANT_Methodref constant pool items.
      */
     static final int METH = 10;
 
     /**
+     * CONSTANT_InterfaceMethodref 常量池元素
      * The type of CONSTANT_InterfaceMethodref constant pool items.
      */
     static final int IMETH = 11;
 
     /**
+     * CONSTANT_String 常量池元素
      * The type of CONSTANT_String constant pool items.
      */
     static final int STR = 8;
 
     /**
+     * CONSTANT_Integer 常量池元素
      * The type of CONSTANT_Integer constant pool items.
      */
     static final int INT = 3;
 
     /**
+     * CONSTANT_Float 常量池元素
      * The type of CONSTANT_Float constant pool items.
      */
     static final int FLOAT = 4;
 
     /**
+     * CONSTANT_Long 常量池元素
      * The type of CONSTANT_Long constant pool items.
      */
     static final int LONG = 5;
 
     /**
+     * CONSTANT_Double 常量池元素
      * The type of CONSTANT_Double constant pool items.
      */
     static final int DOUBLE = 6;
 
     /**
+     * CONSTANT_NameAndType 常量池元素
      * The type of CONSTANT_NameAndType constant pool items.
      */
     static final int NAME_TYPE = 12;
 
     /**
+     * CONSTANT_Utf8 常量池元素
      * The type of CONSTANT_Utf8 constant pool items.
      */
     static final int UTF8 = 1;
 
     /**
+     * CONSTANT_MethodType 常量池元素
      * The type of CONSTANT_MethodType constant pool items.
      */
     static final int MTYPE = 16;
 
     /**
+     * CONSTANT_MethodHandle 常量池元素
      * The type of CONSTANT_MethodHandle constant pool items.
      */
     static final int HANDLE = 15;
 
     /**
+     * CONSTANT_InvokeDynamic 常量池元素
      * The type of CONSTANT_InvokeDynamic constant pool items.
      */
     static final int INDY = 18;
 
     /**
+     * CONSTANT_MethodHandle 常量池元素的基础值。ASM 内部对CONSTANT_MethodHandle
+     * 存九种值
      * The base value for all CONSTANT_MethodHandle constant pool items.
      * Internally, ASM store the 9 variations of CONSTANT_MethodHandle into 9
      * different items.
@@ -250,6 +289,7 @@ public class ClassWriter extends ClassVisitor {
     static final int HANDLE_BASE = 20;
 
     /**
+     * {@link ClassWriter#typeTable} 中储存的普通类型
      * Normal type Item stored in the ClassWriter {@link ClassWriter#typeTable},
      * instead of the constant pool, in order to avoid clashes with normal
      * constant pool items in the ClassWriter constant pool's hash table.
@@ -257,6 +297,7 @@ public class ClassWriter extends ClassVisitor {
     static final int TYPE_NORMAL = 30;
 
     /**
+     * {@link ClassWriter#typeTable} 中未初始化类型
      * Uninitialized type Item stored in the ClassWriter
      * {@link ClassWriter#typeTable}, instead of the constant pool, in order to
      * avoid clashes with normal constant pool items in the ClassWriter constant
@@ -265,6 +306,7 @@ public class ClassWriter extends ClassVisitor {
     static final int TYPE_UNINIT = 31;
 
     /**
+     * {@link ClassWriter#typeTable} 中保存的合并类型
      * Merged type Item stored in the ClassWriter {@link ClassWriter#typeTable},
      * instead of the constant pool, in order to avoid clashes with normal
      * constant pool items in the ClassWriter constant pool's hash table.
@@ -272,6 +314,7 @@ public class ClassWriter extends ClassVisitor {
     static final int TYPE_MERGED = 32;
 
     /**
+     * BootstrapMethods 类型。不在常量池中。
      * The type of BootstrapMethods items. These items are stored in a special
      * class attribute named BootstrapMethods and not in the constant pool.
      */
@@ -283,31 +326,38 @@ public class ClassWriter extends ClassVisitor {
     ClassReader cr;
 
     /**
+     * 生成类文件的版本号
      * Minor and major version numbers of the class to be generated.
      */
     int version;
 
     /**
+     * 常量池中加入的下一个元素的位置索引
      * Index of the next item to be added in the constant pool.
      */
     int index;
 
     /**
+     * 该类的常量池
      * The constant pool of this class.
      */
     final ByteVector pool;
 
     /**
+     *
+     * 常量池的哈希表数据
      * The constant pool's hash table data.
      */
     Item[] items;
 
     /**
+     * 常量池哈希表阈值
      * The threshold of the constant pool's hash table.
      */
     int threshold;
 
     /**
+     * 用于寻找哈希表中元素的可重用键
      * A reusable key used to look for items in the {@link #items} hash table.
      */
     final Item key;
@@ -328,6 +378,7 @@ public class ClassWriter extends ClassVisitor {
     final Item key4;
 
     /**
+     * 用于储存不需要储存在常量池中的临时内部名称。
      * A type table used to temporarily store internal names that will not
      * necessarily be stored in the constant pool. This type table is used by
      * the control flow and data flow analysis algorithm used to compute stack
@@ -341,42 +392,50 @@ public class ClassWriter extends ClassVisitor {
     Item[] typeTable;
 
     /**
+     * {@link #typeTable} 数组中的元素个数
      * Number of elements in the {@link #typeTable} array.
      */
     private short typeCount;
 
     /**
+     * 该类的访问标识
      * The access flags of this class.
      */
     private int access;
 
     /**
+     * 常量池包含该类的内部名称
      * The constant pool item that contains the internal name of this class.
      */
     private int name;
 
     /**
+     * 该类的内部名称
      * The internal name of this class.
      */
     String thisName;
 
     /**
+     * 常量池包含该类的签名
      * The constant pool item that contains the signature of this class.
      */
     private int signature;
 
     /**
+     * 常量池元素包含父类的内部名称
      * The constant pool item that contains the internal name of the super class
      * of this class.
      */
     private int superName;
 
     /**
+     * 该类或接口实现或拓展的接口数
      * Number of interfaces implemented or extended by this class or interface.
      */
     private int interfaceCount;
 
     /**
+     * 该类或接口实现或拓展的接口。该数组储存了常量池中接口内部名称的下标索引
      * The interfaces implemented or extended by this class or interface. More
      * precisely, this array contains the indexes of the constant pool items
      * that contain the internal names of these interfaces.
@@ -384,74 +443,88 @@ public class ClassWriter extends ClassVisitor {
     private int[] interfaces;
 
     /**
+     * 该类编译的源文件名称在常量池中的索引
      * The index of the constant pool item that contains the name of the source
      * file from which this class was compiled.
      */
     private int sourceFile;
 
     /**
+     * 该类的SourceDebug 属性
      * The SourceDebug attribute of this class.
      */
     private ByteVector sourceDebug;
 
     /**
+     * 该类外部类名称的常量池索引
      * The constant pool item that contains the name of the enclosing class of
      * this class.
      */
     private int enclosingMethodOwner;
 
     /**
+     * 该类中封闭方法名称在常量池中的索引
      * The constant pool item that contains the name and descriptor of the
      * enclosing method of this class.
      */
     private int enclosingMethod;
 
     /**
+     * 该类运行时可见的注解
      * The runtime visible annotations of this class.
      */
     private AnnotationWriter anns;
 
     /**
+     * 该类运行时不可见的注解
      * The runtime invisible annotations of this class.
      */
     private AnnotationWriter ianns;
 
     /**
+     * 该类运行时可见的类型注解
      * The runtime visible type annotations of this class.
      */
     private AnnotationWriter tanns;
 
     /**
+     * 该类运行时不可见的类型注解
      * The runtime invisible type annotations of this class.
      */
     private AnnotationWriter itanns;
 
     /**
+     * 该类的非标准属性
      * The non standard attributes of this class.
      */
     private Attribute attrs;
 
     /**
+     * 内部类属性的入口数
      * The number of entries in the InnerClasses attribute.
      */
     private int innerClassesCount;
 
     /**
+     * 内部类属性
      * The InnerClasses attribute.
      */
     private ByteVector innerClasses;
 
     /**
+     * BootstrapMethods 属性的入口数
      * The number of entries in the BootstrapMethods attribute.
      */
     int bootstrapMethodsCount;
 
     /**
+     * BootstrapMethods 属性
      * The BootstrapMethods attribute.
      */
     ByteVector bootstrapMethods;
 
     /**
+     * 该类的域。这些域储存在{@link FieldWriter} 对象的链表中。
      * The fields of this class. These fields are stored in a linked list of
      * {@link FieldWriter} objects, linked to each other by their
      * {@link FieldWriter#fv} field. This field stores the first element of this
@@ -460,6 +533,7 @@ public class ClassWriter extends ClassVisitor {
     FieldWriter firstField;
 
     /**
+     * 该类的域。这些域储存在{@link FieldWriter} 对象的链表中。
      * The fields of this class. These fields are stored in a linked list of
      * {@link FieldWriter} objects, linked to each other by their
      * {@link FieldWriter#fv} field. This field stores the last element of this
@@ -468,6 +542,7 @@ public class ClassWriter extends ClassVisitor {
     FieldWriter lastField;
 
     /**
+     * 该类的方法。这些域储存在{@link MethodWriter} 对象的链表中。
      * The methods of this class. These methods are stored in a linked list of
      * {@link MethodWriter} objects, linked to each other by their
      * {@link MethodWriter#mv} field. This field stores the first element of
@@ -476,6 +551,7 @@ public class ClassWriter extends ClassVisitor {
     MethodWriter firstMethod;
 
     /**
+     * 该类的方法。这些域储存在{@link MethodWriter} 对象的链表中。
      * The methods of this class. These methods are stored in a linked list of
      * {@link MethodWriter} objects, linked to each other by their
      * {@link MethodWriter#mv} field. This field stores the last element of this
@@ -484,17 +560,20 @@ public class ClassWriter extends ClassVisitor {
     MethodWriter lastMethod;
 
     /**
+     * 是否自动计算最大栈和本地变量数
      * <tt>true</tt> if the maximum stack size and number of local variables
      * must be automatically computed.
      */
     private boolean computeMaxs;
 
     /**
+     * 是否计算栈帧
      * <tt>true</tt> if the stack map frames must be recomputed from scratch.
      */
     private boolean computeFrames;
 
     /**
+     * 该类的stack map 无效
      * <tt>true</tt> if the stack map tables of this class are invalid. The
      * {@link MethodWriter#resizeInstructions} method cannot transform existing
      * stack map tables, and so produces potentially invalid classes when it is

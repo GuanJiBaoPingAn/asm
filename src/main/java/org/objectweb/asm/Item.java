@@ -30,6 +30,7 @@
 package org.objectweb.asm;
 
 /**
+ * 常量池元素。
  * A constant pool item. Constant pool items can be created with the 'newXXX'
  * methods in the {@link ClassWriter} class.
  * 

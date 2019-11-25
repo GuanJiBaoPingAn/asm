@@ -30,6 +30,7 @@
 package org.objectweb.asm;
 
 /**
+ * Java 注解的访问者。
  * A visitor to visit a Java annotation. The methods of this class must be
  * called in the following order: ( <tt>visit</tt> | <tt>visitEnum</tt> |
  * <tt>visitAnnotation</tt> | <tt>visitArray</tt> )* <tt>visitEnd</tt>.
@@ -46,6 +47,7 @@ public abstract class AnnotationVisitor {
     protected final int api;
 
     /**
+     * 将方法代理给子类
      * The annotation visitor to which this visitor must delegate method calls.
      * May be null.
      */

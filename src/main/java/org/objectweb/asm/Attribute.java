@@ -30,6 +30,15 @@
 package org.objectweb.asm;
 
 /**
+ * 非标准的类、域、方法属性
+ * attribute_info {
+ *  u2 attribute_name_index;
+ *  u4 attribute_length;
+ *  u1 info[attribute_length];
+ * }
+ *
+ * ConstantValue、Code、StackMapTable、Exceptions、BootstrapMethods
+ *
  * A non standard class, field, method or code attribute.
  * 
  * @author Eric Bruneton
@@ -44,11 +53,13 @@ public class Attribute {
     public final String type;
 
     /**
+     * 属性的原始值，未知属性时使用
      * The raw value of this attribute, used only for unknown attributes.
      */
     byte[] value;
 
     /**
+     * 属性列表中的下一个属性
      * The next attribute in this attribute list. May be <tt>null</tt>.
      */
     Attribute next;
@@ -218,6 +229,7 @@ public class Attribute {
     }
 
     /**
+     * 将该属性的所有属性写入给定字节数组
      * Writes all the attributes of this attribute list in the given byte
      * vector.
      * 

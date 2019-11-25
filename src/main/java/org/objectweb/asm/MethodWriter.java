@@ -30,6 +30,7 @@
 package org.objectweb.asm;
 
 /**
+ * {@link MethodVisitor} 的子类，用于生成方法的字节码
  * A {@link MethodVisitor} that generates methods in bytecode form. Each visit
  * method of this class appends the bytecode corresponding to the visited
  * instruction to a byte vector, in the order these methods are called.
@@ -122,33 +123,39 @@ class MethodWriter extends MethodVisitor {
     final ClassWriter cw;
 
     /**
+     * 该方法的访问标识
      * Access flags of this method.
      */
     private int access;
 
     /**
+     * 该方法名称在常量池中的索引
      * The index of the constant pool item that contains the name of this
      * method.
      */
     private final int name;
 
     /**
+     * 该方法描述在常量池中的索引
      * The index of the constant pool item that contains the descriptor of this
      * method.
      */
     private final int desc;
 
     /**
+     * 方法描述
      * The descriptor of this method.
      */
     private final String descriptor;
 
     /**
+     * 方法签名
      * The signature of this method.
      */
     String signature;
 
     /**
+     * 如果不为0，表明该方法必然为从ClassReader 复制到cw.cr
      * If not zero, indicates that the code of this method must be copied from
      * the ClassReader associated to this writer in <code>cw.cr</code>. More
      * precisely, this field gives the index of the first byte to copied from
@@ -165,11 +172,13 @@ class MethodWriter extends MethodVisitor {
     int classReaderLength;
 
     /**
+     * 该方法可以抛出的异常数
      * Number of exceptions that can be thrown by this method.
      */
     int exceptionCount;
 
     /**
+     * 该方法可以抛出的异常。该方法抛出异常的内部名称在常量池中下标集合
      * The exceptions that can be thrown by this method. More precisely, this
      * array contains the indexes of the constant pool items that contain the
      * internal names of these exception classes.
@@ -177,91 +186,108 @@ class MethodWriter extends MethodVisitor {
     int[] exceptions;
 
     /**
+     * 该方法的annotation default 属性
      * The annotation default attribute of this method. May be <tt>null</tt>.
      */
     private ByteVector annd;
 
     /**
+     * 该方法的运行时可见注解
      * The runtime visible annotations of this method. May be <tt>null</tt>.
      */
     private AnnotationWriter anns;
 
     /**
+     * 该方法的运行时不可见注解
      * The runtime invisible annotations of this method. May be <tt>null</tt>.
      */
     private AnnotationWriter ianns;
 
     /**
+     * 该方法的运行时可见类型注解
      * The runtime visible type annotations of this method. May be <tt>null</tt>
      * .
      */
     private AnnotationWriter tanns;
 
     /**
+     * 该方法的运行时不可见类型注解
      * The runtime invisible type annotations of this method. May be
      * <tt>null</tt>.
      */
     private AnnotationWriter itanns;
 
     /**
+     * 该方法的运行时可见参数注解
      * The runtime visible parameter annotations of this method. May be
      * <tt>null</tt>.
      */
     private AnnotationWriter[] panns;
 
     /**
+     * 该方法的运行时不可见参数注解
      * The runtime invisible parameter annotations of this method. May be
      * <tt>null</tt>.
      */
     private AnnotationWriter[] ipanns;
 
     /**
+     * 该方法的合成参数数量
      * The number of synthetic parameters of this method.
      */
     private int synthetics;
 
     /**
+     * 该方法的非标准属性
      * The non standard attributes of the method.
      */
     private Attribute attrs;
 
     /**
+     * 该方法的字节码
      * The bytecode of this method.
      */
     private ByteVector code = new ByteVector();
 
     /**
+     * 该方法的最大栈
      * Maximum stack size of this method.
      */
     private int maxStack;
 
     /**
+     * 该方法的最大局部变量数
      * Maximum number of local variables for this method.
      */
     private int maxLocals;
 
     /**
+     * 当前stack map frame 中的局部变量数
      * Number of local variables in the current stack map frame.
      */
     private int currentLocals;
 
     /**
+     * StackMapTable 属性中的stack map frames 数
      * Number of stack map frames in the StackMapTable attribute.
      */
     private int frameCount;
 
     /**
+     * StackMapTable 属性
      * The StackMapTable attribute.
      */
     private ByteVector stackMap;
 
     /**
+     * StackMapTable 属性中的上一个帧的偏移量
      * The offset of the last frame that was written in the StackMapTable
      * attribute.
      */
     private int previousFrameOffset;
 
     /**
+     * StackMapTable 属性中的最后一个帧
      * The last frame that was written in the StackMapTable attribute.
      * 
      * @see #frame
@@ -269,6 +295,13 @@ class MethodWriter extends MethodVisitor {
     private int[] previousFrame;
 
     /**
+     * 当前stack map frame。第一个元素包含了帧关联指令的偏移，第二个元素是本地变量数，第三个元素
+     * 为栈元素数。
+     * frame[0] = offset
+     * frame[1] = nLocal
+     * frame[2] = nStack
+     * frame[3] = nLocal
+     *
      * The current stack map frame. The first element contains the offset of the
      * instruction to which the frame corresponds, the second element is the
      * number of locals and the third one is the number of stack elements. The
@@ -280,86 +313,103 @@ class MethodWriter extends MethodVisitor {
     private int[] frame;
 
     /**
+     * 异常处理器个数
      * Number of elements in the exception handler list.
      */
     private int handlerCount;
 
     /**
+     * 异常处理器列表中的第一个元素
      * The first element in the exception handler list.
      */
     private Handler firstHandler;
 
     /**
+     * 异常处理器列表中的最后一个元素
      * The last element in the exception handler list.
      */
     private Handler lastHandler;
 
     /**
+     * MethodParameters 的个数
      * Number of entries in the MethodParameters attribute.
      */
     private int methodParametersCount;
 
     /**
+     * MethodParameters 属性
      * The MethodParameters attribute.
      */
     private ByteVector methodParameters;
 
     /**
+     * LocalVariableTable 属性个数
      * Number of entries in the LocalVariableTable attribute.
      */
     private int localVarCount;
 
     /**
+     * LocalVariableTable 属性
      * The LocalVariableTable attribute.
      */
     private ByteVector localVar;
 
     /**
+     * LocalVariableTypeTable 属性个数
      * Number of entries in the LocalVariableTypeTable attribute.
      */
     private int localVarTypeCount;
 
     /**
+     * LocalVariableTypeTable 属性
      * The LocalVariableTypeTable attribute.
      */
     private ByteVector localVarType;
 
     /**
+     * LineNumberTable 属性个数
      * Number of entries in the LineNumberTable attribute.
      */
     private int lineNumberCount;
 
     /**
+     * LineNumberTable 属性
      * The LineNumberTable attribute.
      */
     private ByteVector lineNumber;
 
     /**
+     * 上一个指令的偏移
      * The start offset of the last visited instruction.
      */
     private int lastCodeOffset;
 
     /**
+     * 运行时可见的类型注解
      * The runtime visible type annotations of the code. May be <tt>null</tt>.
      */
     private AnnotationWriter ctanns;
 
     /**
+     * 运行时不可见的类型注解
      * The runtime invisible type annotations of the code. May be <tt>null</tt>.
      */
     private AnnotationWriter ictanns;
 
     /**
+     * 方法的非标准属性
      * The non standard attributes of the method's code.
      */
     private Attribute cattrs;
 
     /**
+     * jump 指令是否太小而需要
      * Indicates if some jump instructions are too small and need to be resized.
      */
     private boolean resize;
 
     /**
+     * 方法的子程序个数
      * The number of subroutines in this method.
      */
     private int subroutines;
@@ -377,6 +427,7 @@ class MethodWriter extends MethodVisitor {
      */
 
     /**
+     * 表明什么必须被自动计算
      * Indicates what must be automatically computed.
      * 
      * @see #FRAMES
