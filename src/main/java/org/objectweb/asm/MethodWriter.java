@@ -274,6 +274,13 @@ class MethodWriter extends MethodVisitor {
     private int frameCount;
 
     /**
+     * StackMapTable_attribute {
+     *  u2 attribute_name_index;
+     *  u4 attribute_length;
+     *  u2 number_of_entries;
+     *  stack_map_frame entries[number_of_entries];
+     * }
+     *
      * StackMapTable 属性
      * The StackMapTable attribute.
      */
@@ -337,6 +344,11 @@ class MethodWriter extends MethodVisitor {
     private int methodParametersCount;
 
     /**
+     * {
+     *  u2 name_index;
+     *  u2 access_flags;
+     * } parameters[parameters_count];
+     *
      * MethodParameters 属性
      * The MethodParameters attribute.
      */
@@ -456,6 +468,7 @@ class MethodWriter extends MethodVisitor {
     private Label currentBlock;
 
     /**
+     * 上一个指令完成的栈大小
      * The (relative) stack size after the last visited instruction. This size
      * is relative to the beginning of the current basic block, i.e., the true
      * stack size after the last visited instruction is equal to the
@@ -465,6 +478,7 @@ class MethodWriter extends MethodVisitor {
     private int stackSize;
 
     /**
+     * 上一个指令完成后的最大栈深
      * The (relative) maximum stack size after the last visited instruction.
      * This size is relative to the beginning of the current basic block, i.e.,
      * the true maximum stack size after the last visited instruction is equal

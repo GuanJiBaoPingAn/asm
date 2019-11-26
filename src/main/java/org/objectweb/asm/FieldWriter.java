@@ -64,8 +64,23 @@ final class FieldWriter extends FieldVisitor {
 
     /**
      * 该域描述符在常量池中索引
-     * The index of the constant pool item that contains the descriptor of this
-     * field.
+     *
+     * Interpretation of field descriptors
+     * FieldType Type Interpretation
+     *      B      byte signed byte
+     *      C      char Unicode character code point in the Basic Multilingual Plane, encoded with UTF-16
+     *      D      double double-precision floating-point value
+     *      F      float single-precision floating-point value
+     *      I      int integer
+     *      J      long long integer
+     *      L      ClassName ; reference an instance of class ClassName
+     *      S      short signed short
+     *      Z       boolean true or false
+     *      [       reference one array dimension The index of the constant pool item that contains the descriptor of this field.
+     *
+     * Object m(int i, double d, Thread t) {...}
+     * ->
+     * (IDLjava/lang/Thread;)Ljava/lang/Object;
      */
     private final int desc;
 

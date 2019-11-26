@@ -111,16 +111,19 @@ public interface Opcodes {
     // stack map frame types
 
     /**
+     * 拓展帧
      * Represents an expanded frame. See {@link ClassReader#EXPAND_FRAMES}.
      */
     int F_NEW = -1;
 
     /**
+     * 完整帧的被压缩的帧
      * Represents a compressed frame with complete frame data.
      */
     int F_FULL = 0;
 
     /**
+     * 被压缩的帧，本地变量和上一个帧相同
      * Represents a compressed frame where locals are the same as the locals in
      * the previous frame, except that additional 1-3 locals are defined, and
      * with an empty stack.
@@ -146,6 +149,27 @@ public interface Opcodes {
      */
     int F_SAME1 = 4;
 
+    /**
+     * Top_variable_info {
+     *  u1 tag = ITEM_Top;  0
+     * }
+     *
+     * Integer_variable_info {
+     *  u1 tag = ITEM_Integer; 1
+     * }
+     *
+     * Float_variable_info {
+     *  u1 tag = ITEM_Float;  2
+     * }
+     *
+     * Null_variable_info {
+     *  u1 tag = ITEM_Null;  5
+     * }
+     *
+     * UninitializedThis_variable_info {
+     *  u1 tag = ITEM_UninitializedThis;  6
+     * }
+     */
     Integer TOP = new Integer(0);
     Integer INTEGER = new Integer(1);
     Integer FLOAT = new Integer(2);

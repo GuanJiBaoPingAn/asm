@@ -31,6 +31,28 @@ package org.objectweb.asm;
 
 /**
  * {@link ClassVisitor} 的子类，用于生成Java 类字节形式的类。
+ * ClassFile {
+ *  u4 magic;
+ *  u2 minor_version;
+ *  u2 major_version;
+ *  u2 constant_pool_count;
+ *  cp_info constant_pool[constant_pool_count-1];
+ *  u2 access_flags;
+ *  u2 this_class;
+ *  u2 super_class;
+ *  u2 interfaces_count;
+ *  u2 interfaces[interfaces_count];
+ *  u2 fields_count;
+ *  field_info fields[fields_count];
+ *  u2 methods_count;
+ *  method_info methods[methods_count];
+ *  u2 attributes_count;
+ *  attribute_info attributes[attributes_count];
+ * }
+ *
+ *
+ *
+ *
  * A {@link ClassVisitor} that generates classes in bytecode form. More
  * precisely this visitor generates a byte array conforming to the Java class
  * file format. It can be used alone, to generate a Java class "from scratch",
@@ -196,87 +218,40 @@ public class ClassWriter extends ClassVisitor {
     static final byte[] TYPE;
 
     /**
-     * CONSTANT_Class 常量池元素
-     * The type of CONSTANT_Class constant pool items.
+     * cp_info {
+     *  u1 tag;
+     *  u1 info[];
+     * }
+     * Constant pool tags
+     * Constant Type                Value
+     * CONSTANT_Class                 7
+     * CONSTANT_Fieldref              9
+     * CONSTANT_Methodref            10
+     * CONSTANT_InterfaceMethodref   11
+     * CONSTANT_String               8
+     * CONSTANT_Integer              3
+     * CONSTANT_Float                4
+     * CONSTANT_Long                 5
+     * CONSTANT_Double               6
+     * CONSTANT_NameAndType          12
+     * CONSTANT_Utf8                 1
+     * CONSTANT_MethodHandle         15
+     * CONSTANT_MethodType           16
+     * CONSTANT_InvokeDynamic        18
      */
     static final int CLASS = 7;
-
-    /**
-     * CONSTANT_Fieldref 常量池元素
-     * The type of CONSTANT_Fieldref constant pool items.
-     */
     static final int FIELD = 9;
-
-    /**
-     * CONSTANT_Methodref 常量池元素
-     * The type of CONSTANT_Methodref constant pool items.
-     */
     static final int METH = 10;
-
-    /**
-     * CONSTANT_InterfaceMethodref 常量池元素
-     * The type of CONSTANT_InterfaceMethodref constant pool items.
-     */
     static final int IMETH = 11;
-
-    /**
-     * CONSTANT_String 常量池元素
-     * The type of CONSTANT_String constant pool items.
-     */
     static final int STR = 8;
-
-    /**
-     * CONSTANT_Integer 常量池元素
-     * The type of CONSTANT_Integer constant pool items.
-     */
     static final int INT = 3;
-
-    /**
-     * CONSTANT_Float 常量池元素
-     * The type of CONSTANT_Float constant pool items.
-     */
     static final int FLOAT = 4;
-
-    /**
-     * CONSTANT_Long 常量池元素
-     * The type of CONSTANT_Long constant pool items.
-     */
     static final int LONG = 5;
-
-    /**
-     * CONSTANT_Double 常量池元素
-     * The type of CONSTANT_Double constant pool items.
-     */
     static final int DOUBLE = 6;
-
-    /**
-     * CONSTANT_NameAndType 常量池元素
-     * The type of CONSTANT_NameAndType constant pool items.
-     */
     static final int NAME_TYPE = 12;
-
-    /**
-     * CONSTANT_Utf8 常量池元素
-     * The type of CONSTANT_Utf8 constant pool items.
-     */
     static final int UTF8 = 1;
-
-    /**
-     * CONSTANT_MethodType 常量池元素
-     * The type of CONSTANT_MethodType constant pool items.
-     */
     static final int MTYPE = 16;
-
-    /**
-     * CONSTANT_MethodHandle 常量池元素
-     * The type of CONSTANT_MethodHandle constant pool items.
-     */
     static final int HANDLE = 15;
-
-    /**
-     * CONSTANT_InvokeDynamic 常量池元素
-     * The type of CONSTANT_InvokeDynamic constant pool items.
-     */
     static final int INDY = 18;
 
     /**
@@ -400,6 +375,17 @@ public class ClassWriter extends ClassVisitor {
     /**
      * 该类的访问标识
      * The access flags of this class.
+     *
+     *  Class access and property modifiers
+     *    Flag          Name  Value Interpretation
+     *  ACC_PUBLIC     0x0001 Declared public; may be accessed from outside its package.
+     *  ACC_FINAL      0x0010 Declared final; no subclasses allowed.
+     *  ACC_SUPER      0x0020 Treat superclass methods specially when invoked by the invokespecial instruction.
+     *  ACC_INTERFACE  0x0200 Is an interface, not a class.
+     *  ACC_ABSTRACT   0x0400 Declared abstract; must not be instantiated.
+     *  ACC_SYNTHETIC  0x1000 Declared synthetic; not present in the source code.
+     *  ACC_ANNOTATION 0x2000 Declared as an annotation type.
+     *  ACC_ENUM       0x4000 Declared as an enum type.
      */
     private int access;
 

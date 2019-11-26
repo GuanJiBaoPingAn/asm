@@ -487,11 +487,13 @@ final class Frame {
     private int[] outputLocals;
 
     /**
+     *
      * The output stack map frame stack.
      */
     private int[] outputStack;
 
     /**
+     * 输出栈的大小
      * Relative size of the output stack. The exact semantics of this field
      * depends on the algorithm that is used.
      * 
@@ -572,6 +574,7 @@ final class Frame {
     }
 
     /**
+     * 栈帧中push 入一个新的类型
      * Pushes a new type onto the output frame stack.
      * 
      * @param type
@@ -839,6 +842,7 @@ final class Frame {
     }
 
     /**
+     * 模拟在栈帧上执行给定指令
      * Simulates the action of the given instruction on the output stack frame.
      * 
      * @param opcode
