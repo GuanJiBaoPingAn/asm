@@ -18,4 +18,5 @@ ClassFile {
     attribute_info attributes[attributes_count];
 }
 ```
-
+#####Class access and property modifiers
+![pic1](./imgs/CLASS_ACCESS.PNG)
